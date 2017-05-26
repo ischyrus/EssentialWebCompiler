@@ -11,6 +11,8 @@
     <AssemblyName>WebCompiler</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -117,6 +119,9 @@
     <EmbeddedResource Include="Node\7z.dll" />
     <EmbeddedResource Include="Node\7z.exe" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="FodyWeavers.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>"$(SolutionDir)packages\NuGet.CommandLine.2.8.5\tools\nuget.exe" pack .\msbuild\BuildWebCompiler.nuspec -Verbosity quiet</PostBuildEvent>
@@ -124,6 +129,15 @@
   <PropertyGroup>
     <PreBuildEvent>"$(SolutionDir)build\build.cmd"</PreBuildEvent>
   </PropertyGroup>
+  <Import Project="..\..\packages\Fody.2.0.6\build\dotnet\Fody.targets" Condition="Exists('..\..\packages\Fody.2.0.6\build\dotnet\Fody.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\Fody.2.0.6\build\dotnet\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Fody.2.0.6\build\dotnet\Fody.targets'))" />
+    <Error Condition="!Exists('..\..\packages\Costura.Fody.1.5.1\build\dotnet\Costura.Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Costura.Fody.1.5.1\build\dotnet\Costura.Fody.targets'))" />
+  </Target>
+  <Import Project="..\..\packages\Costura.Fody.1.5.1\build\dotnet\Costura.Fody.targets" Condition="Exists('..\..\packages\Costura.Fody.1.5.1\build\dotnet\Costura.Fody.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -9,9 +9,9 @@ namespace WebCompiler
     {
         static int Main(params string[] args)
         {
-            string configPath = args[0];
-            string file = args.Length > 1 ? args[1] : null;
-            var configs = GetConfigs(configPath, file);
+            const string configPath = "compilerconfig.json";
+
+            var configs = GetConfigs(configPath);
 
             if (configs == null)
             {
@@ -20,21 +20,22 @@ namespace WebCompiler
             }
 
             ConfigFileProcessor processor = new ConfigFileProcessor();
-            EventHookups(processor, configPath);
+            EventHookups(processor);
 
-            var results = processor.Process(configPath, configs);
+            var results = processor.Process(configPath, configs, true);
             var errorResults = results.Where(r => r.HasErrors);
 
-            foreach (var result in errorResults)
+            var compilerResults = errorResults as CompilerResult[] ?? errorResults.ToArray();
+            foreach (var result in compilerResults)
                 foreach (var error in result.Errors)
                 {
                     Console.Write("\x1B[31m" + error.Message);
                 }
 
-            return errorResults.Any() ? 1 : 0;
+            return compilerResults.Any() ? 1 : 0;
         }
 
-        private static void EventHookups(ConfigFileProcessor processor, string configPath)
+        private static void EventHookups(ConfigFileProcessor processor)
         {
             // For console colors, see http://stackoverflow.com/questions/23975735/what-is-this-u001b9-syntax-of-choosing-what-color-text-appears-on-console
 
@@ -50,20 +51,12 @@ namespace WebCompiler
             FileMinifier.AfterWritingGzipFile += (s, e) => { Console.WriteLine($"  \x1B[32mGZipped"); };
         }
 
-        private static IEnumerable<Config> GetConfigs(string configPath, string file)
+        private static IEnumerable<Config> GetConfigs(string configPath)
         {
             var configs = ConfigHandler.GetConfigs(configPath);
 
             if (configs == null || !configs.Any())
                 return null;
-
-            if (file != null)
-            {
-                if (file.StartsWith("*"))
-                    configs = configs.Where(c => Path.GetExtension(c.InputFile).Equals(file.Substring(1), StringComparison.OrdinalIgnoreCase));
-                else
-                    configs = configs.Where(c => c.InputFile.Equals(file, StringComparison.OrdinalIgnoreCase));
-            }
 
             return configs;
         }
