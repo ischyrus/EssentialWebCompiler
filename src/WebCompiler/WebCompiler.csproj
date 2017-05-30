@@ -126,9 +126,6 @@
   <PropertyGroup>
     <PostBuildEvent>"$(SolutionDir)packages\NuGet.CommandLine.2.8.5\tools\nuget.exe" pack .\msbuild\BuildWebCompiler.nuspec -Verbosity quiet</PostBuildEvent>
   </PropertyGroup>
-  <PropertyGroup>
-    <PreBuildEvent>"$(SolutionDir)build\build.cmd"</PreBuildEvent>
-  </PropertyGroup>
   <Import Project="..\..\packages\Fody.2.0.6\build\dotnet\Fody.targets" Condition="Exists('..\..\packages\Fody.2.0.6\build\dotnet\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
