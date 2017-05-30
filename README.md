@@ -1,21 +1,30 @@
 ## EssentialWebCompiler
 
-Simple, standalone executable for Windows command-line compilation of LESS and SASS files derived from madskristensen's excellent WebCompiler project.
+EssentialWebCompiler is a run-time stylesheet compiler for .NET, and a fork of madskristensen's [WebCompiler](https://github.com/madskristensen/WebCompiler).
+While WebCompiler offers an out-of-the-box Visual Studio extension for easily updating your stylesheets at development time, 
+EssentialWebCompiler allows you to invoke the powerful compiler at run-time, making modifying your application's theme simple and painless. 
+
+Since the heart of EssentialWebCompiler is WebCompiler, your existing compilerconfig.json file is interoperable for
+both purposes.  Because EssentialWebCompiler is meant to provide speedy run-time compilation, much of the underlying compiler library is preloaded,
+which means it uses a little more space in your codebase, but will have a faster average compilation time.
 
 ### Features
 
+- Runtime stylesheet compilation
+- Based upon popular and reliable [WebCompiler](https://github.com/madskristensen/WebCompiler) project by madskristensen
 - Compiles LESS, Scss, Stylus, JSX, ES6 and (Iced)CoffeeScript
-- Based upon acclaimed WebCompiler project by madskristensen
-- Standalone Windows compiler executable
-- Command line execution
-- Single configuration file, no dependencies
+- Event and error logging included
+- Simple installation into your application via [NuGet](https://www.nuget.org/packages/Equus.Tools.EssentialWebCompiler/)
 
 ### Getting started
 
-Place the WebCompiler.exe executable in the same directory as compilerconfig.json.
-Running the executable will run a fresh compilation of your stylesheet using
-the provided configuration. No arguments are necessary; configuration is ascertained
-from compilerconfig.json.
+Install EssentialWebCompiler into your project that requires run-time compilation using [NuGet](https://www.nuget.org/packages/Equus.Tools.EssentialWebCompiler/).
+After that, it's simple as pointing the compiler in the direction of you WebCompiler configuration file and saying "Compile".
+
+```C#
+var results = Essential.Compile("C:/FooSolution/BarProject/compilerconfig.json");
+```
+The outputted results contains any log messages that were generated as well as any errors. Your stylesheet(s) will automatically be updated according to your configuraiton file.
 
 ### compilerconfig.json
 

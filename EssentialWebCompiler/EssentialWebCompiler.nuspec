@@ -6,8 +6,9 @@
     <title>$title$</title>
     <authors>dkoch74</authors>
     <owners>$author$</owners>
+    <licenseUrl>https://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Stripped-down version of madkristensen's WebCompiler, catered toward runtime stylesheet compilation.</description>
+    <description>Stripped-down version of madskristensen's WebCompiler, catered toward runtime stylesheet compilation.</description>
     <releaseNotes>Initial release of tool.</releaseNotes>
     <copyright>Copyright 2017</copyright>
     <tags>stylesheet compiler webcompiler LESS SASS</tags>
