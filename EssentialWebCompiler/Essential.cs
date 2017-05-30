@@ -1,17 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WebCompiler;
+﻿using WebCompiler;
 
 namespace EssentialWebCompiler
 {
+    /// <summary>
+    /// Library for run-time compilation of stylesheets using WebCompiler.
+    /// </summary>
     public static class Essential
     {
-        public static bool Compile(string configurationFilePath)
+        /// <summary>
+        /// Run compilation(s) for the provided compilerconfig.json file.
+        /// </summary>
+        /// <param name="configurationFilePath"></param>
+        /// <returns></returns>
+        public static CompilationResult Compile(string configurationFilePath)
         {
-            return Program.Main(configurationFilePath) == 0;
+            return Program.Run(configurationFilePath);
         }
     }
 }
