@@ -62,7 +62,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CompilationResult.cs" />
+    <Compile Include="WebCompilerResult.cs" />
     <Compile Include="Compile\BaseOptions.cs" />
     <Compile Include="Compile\BabelCompiler.cs" />
     <Compile Include="Compile\CssRelativePathAdjuster.cs" />

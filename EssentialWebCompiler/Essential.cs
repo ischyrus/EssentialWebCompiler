@@ -1,4 +1,5 @@
-﻿using WebCompiler;
+﻿using System.Collections.Generic;
+using WebCompiler;
 
 namespace EssentialWebCompiler
 {
@@ -12,9 +13,9 @@ namespace EssentialWebCompiler
         /// </summary>
         /// <param name="configurationFilePath"></param>
         /// <returns></returns>
-        public static CompilationResult Compile(string configurationFilePath)
+        public static EssentialResult Compile(string configurationFilePath)
         {
-            return Program.Run(configurationFilePath);
+            return new EssentialResult(Program.Run(configurationFilePath));
         }
     }
 }

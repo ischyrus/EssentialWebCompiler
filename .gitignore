@@ -13,6 +13,7 @@ packages
 x64/
 [Bb]in/
 [Oo]bj/
+Equus.Tools.EssentialWebCompiler*.nupkg
 
 # MSTest test Results
 [Tt]est[Rr]esult*/

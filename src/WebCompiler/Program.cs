@@ -10,14 +10,14 @@ namespace WebCompiler
     /// </summary>
     public class Program
     {
-        private static CompilationResult _result;
+        private static WebCompilerResult _result;
 
         /// <summary>
         /// Run the compiler with the provided configuration file and capture results.
         /// </summary>
         /// <param name="configurationFilePath"></param>
         /// <returns></returns>
-        public static CompilationResult Run(string configurationFilePath)
+        public static WebCompilerResult Run(string configurationFilePath)
         {
             Main(configurationFilePath);
 
@@ -31,15 +31,15 @@ namespace WebCompiler
         /// <returns></returns>
         public static int Main(params string[] args)
         {
-            _result = new CompilationResult();
+            _result = new WebCompilerResult();
             string configPath = args.Length > 0 ? args[0] : "compilerconfig.json";
 
             var configs = GetConfigs(configPath);
 
             if (configs == null)
             {
-                Log("No configurations matched.");
-                return 0;
+                Log("No configurations matched.", true);
+                return 1;
             }
 
             ConfigFileProcessor processor = new ConfigFileProcessor();
@@ -48,14 +48,14 @@ namespace WebCompiler
             var results = processor.Process(configPath, configs, true);
             var errorResults = results.Where(r => r.HasErrors);
 
-            var compilerResults = errorResults as CompilerResult[] ?? errorResults.ToArray();
-            foreach (var result in compilerResults)
-            foreach (var error in result.Errors)
+            var compilerComplaints = errorResults as CompilerResult[] ?? errorResults.ToArray();
+            foreach (var result in compilerComplaints)
             {
-                Console.Write("31m" + error.Message);
+                foreach (var error in result.Errors)
+                    Log(error.Message, true);
             }
 
-            return compilerResults.Any() ? 1 : 0;
+            return compilerComplaints.Any() ? 1 : 0;
         }
 
         private static void EventHookups(ConfigFileProcessor processor)
