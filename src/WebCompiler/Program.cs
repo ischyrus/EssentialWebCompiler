@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace WebCompiler
 {
-    class Program
+    public class Program
     {
-        static int Main(params string[] args)
+        public static int Main(params string[] args)
         {
-            const string configPath = "compilerconfig.json";
+            string configPath = args.Length > 0 ? args[0] : "compilerconfig.json";
 
             var configs = GetConfigs(configPath);
 

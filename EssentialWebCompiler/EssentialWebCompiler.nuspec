@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Equus.Tools.EssentialWebCompiler</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>dkoch74</authors>
+    <owners>$author$</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Stripped-down version of madkristensen's WebCompiler, catered toward runtime stylesheet compilation.</description>
+    <releaseNotes>Initial release of tool.</releaseNotes>
+    <copyright>Copyright 2017</copyright>
+    <tags>stylesheet compiler webcompiler LESS SASS</tags>
+  </metadata>
+</package>
