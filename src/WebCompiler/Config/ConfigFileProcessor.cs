@@ -12,16 +12,16 @@ namespace WebCompiler
     public class ConfigFileProcessor
     {
         private static List<string> _processing = new List<string>();
-        private static object _syncRoot = new object(); // Used for source file changes so they don't try to write to the same file at the same time.
 
         /// <summary>
         /// Parses a compiler config file and runs the configured compilers.
         /// </summary>
         /// <param name="configFile">The absolute or relative file path to compilerconfig.json</param>
         /// <param name="configs">Optional configuration items in the config file</param>
-        /// <param name="force">Forces compilation of all config items.</param>
+        /// <param name="forceCompilation">Forces compilation of all config items.</param>
+        /// <param name="forceReinitialization">forces the Node compiler dependencies to be cleared out and re-initialized</param>
         /// <returns>A list of compiler results.</returns>
-        public IEnumerable<CompilerResult> Process(string configFile, IEnumerable<Config> configs = null, bool force = false)
+        public IEnumerable<CompilerResult> Process(string configFile, IEnumerable<Config> configs = null, bool forceCompilation = false, bool forceReinitialization = false)
         {
             if (_processing.Contains(configFile))
                 return Enumerable.Empty<CompilerResult>();
@@ -39,9 +39,9 @@ namespace WebCompiler
 
                 foreach (Config config in configs)
                 {
-                    if (force || config.CompilationRequired())
+                    if (forceCompilation || config.CompilationRequired())
                     {
-                        var result = ProcessConfig(info.Directory.FullName, config);
+                        var result = ProcessConfig(info.Directory.FullName, config, forceReinitialization);
                         list.Add(result);
                         OnConfigProcessed(config, list.Count, configs.Count());
                     }
@@ -86,79 +86,6 @@ namespace WebCompiler
         }
 
         /// <summary>
-        /// Compiles all configs with the same input file extension as the specified sourceFile
-        /// </summary>
-        public IEnumerable<CompilerResult> SourceFileChanged(string configFile,
-                                                             string sourceFile,
-                                                             string projectPath)
-        {
-            return SourceFileChanged(configFile, sourceFile, projectPath, new HashSet<string>());
-        }
-
-        /// <summary>
-        /// Compiles all configs with the same input file extension as the specified sourceFile
-        /// </summary>
-        private IEnumerable<CompilerResult> SourceFileChanged(string configFile,
-                                                              string sourceFile,
-                                                              string projectPath,
-                                                              HashSet<string> compiledFiles)
-        {
-            lock (_syncRoot)
-            {
-                string folder = Path.GetDirectoryName(configFile);
-                List<CompilerResult> list = new List<CompilerResult>();
-                var configs = ConfigHandler.GetConfigs(configFile);
-
-                // Compile if the file if it's referenced directly in compilerconfig.json
-                foreach (Config config in configs)
-                {
-                    string input = Path.Combine(folder, config.InputFile.Replace("/", "\\"));
-
-                    if (input.Equals(sourceFile, StringComparison.OrdinalIgnoreCase))
-                    {
-                        list.Add(ProcessConfig(folder, config));
-                        compiledFiles.Add(input.ToLowerInvariant());
-                    }
-                }
-
-                //compile files that are dependent on the current file
-                var dependencies = DependencyService.GetDependencies(projectPath, sourceFile);
-                if (dependencies != null)
-                {
-                    string key = sourceFile.ToLowerInvariant();
-
-                    if (dependencies.ContainsKey(key))
-                    {
-                        //compile all files that have references to the compiled file
-                        foreach (var file in dependencies[key].DependentFiles.ToArray())
-                        {
-                            if (!compiledFiles.Contains(file.ToLowerInvariant()))
-                                list.AddRange(SourceFileChanged(configFile, file, projectPath, compiledFiles));
-                        }
-                    }
-                }
-                else
-                {
-                    // If not referenced directly, compile all configs with same file extension
-                    if (list.Count == 0)
-                    {
-                        string sourceExtension = Path.GetExtension(sourceFile);
-
-                        foreach (Config config in configs)
-                        {
-                            string inputExtension = Path.GetExtension(config.InputFile);
-
-                            if (inputExtension.Equals(sourceExtension, StringComparison.OrdinalIgnoreCase))
-                                list.Add(ProcessConfig(folder, config));
-                        }
-                    }
-                }
-
-                return list;
-            }
-        }
-
-        /// <summary>
         /// Returns a collection of config objects that all contain the specified sourceFile
         /// </summary>
         public static IEnumerable<Config> IsFileConfigured(string configFile, string sourceFile)
@@ -185,9 +112,9 @@ namespace WebCompiler
             }
         }
 
-        private CompilerResult ProcessConfig(string baseFolder, Config config)
+        private CompilerResult ProcessConfig(string baseFolder, Config config, bool forceReinitialization = false)
         {
-            ICompiler compiler = CompilerService.GetCompiler(config);
+            ICompiler compiler = CompilerService.GetCompiler(config, forceReinitialization);
 
             var result = compiler.Compile(config);
 

@@ -40,19 +40,5 @@ namespace WebCompilerTest
             Assert.IsTrue(result.Count() == 1);
             Assert.IsTrue(result.ElementAt(0).HasErrors);
         }
-
-        [TestMethod, TestCategory("BABEL")]
-        public void AssociateExtensionSourceFileChangedTest()
-        {
-            var result = _processor.SourceFileChanged("../../artifacts/babelconfig.json", "babel/file1.jsx", null);
-            Assert.AreEqual(1, result.Count());
-        }
-
-        [TestMethod, TestCategory("BABEL")]
-        public void OtherExtensionTypeSourceFileChangedTest()
-        {
-            var result = _processor.SourceFileChanged("../../artifacts/babelconfig.json", "babel/notjsx.css", null);
-            Assert.AreEqual(0, result.Count<CompilerResult>());
-        }
     }
 }

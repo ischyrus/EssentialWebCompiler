@@ -51,29 +51,6 @@ namespace WebCompilerTest
         }
 
         [TestMethod, TestCategory("SCSS")]
-        public void AssociateExtensionSourceFileChangedTest()
-        {
-            var result = _processor.SourceFileChanged(new FileInfo("../../artifacts/scssconfig.json").FullName,new FileInfo( "../../artifacts/scss/_variables.scss").FullName, new DirectoryInfo("../../artifacts/").FullName);
-            Assert.AreEqual(1, result.Count<CompilerResult>());
-            Assert.IsTrue(File.Exists("../../artifacts/scss/test.css"));
-        }
-
-        [TestMethod, TestCategory("SCSS")]
-        public void CommaListOfImportsSourcefileChanged()
-        {
-            var result = _processor.SourceFileChanged(new FileInfo("../../artifacts/scssconfig.json").FullName, new FileInfo("../../artifacts/scss/sub/foo.scss").FullName, new DirectoryInfo("../../artifacts/").FullName);
-            Assert.AreEqual(1, result.Count<CompilerResult>());
-            Assert.IsTrue(File.Exists("../../artifacts/scss/test.css"));
-        }
-
-        [TestMethod, TestCategory("SCSS")]
-        public void OtherExtensionTypeSourceFileChangedTest()
-        {
-            var result = _processor.SourceFileChanged("../../artifacts/scssconfig.json", "scss/filewithinvalidextension.less", null);
-            Assert.AreEqual(0, result.Count<CompilerResult>());
-        }
-
-        [TestMethod, TestCategory("SCSS")]
         public void MultiLineComments()
         {
             var result = _processor.Process("../../artifacts/scssconfig-no-sourcemap.json");

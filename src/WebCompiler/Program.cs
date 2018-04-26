@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace WebCompiler
@@ -24,6 +25,8 @@ namespace WebCompiler
             return _result;
         }
 
+        private static int CompilationAttempts = 0;
+
         /// <summary>
         /// Entry-point for compilation
         /// </summary>
@@ -45,17 +48,37 @@ namespace WebCompiler
             ConfigFileProcessor processor = new ConfigFileProcessor();
             EventHookups(processor);
 
-            var results = processor.Process(configPath, configs, true);
-            var errorResults = results.Where(r => r.HasErrors);
+            bool problemEncountered = false;
 
-            var compilerComplaints = errorResults as CompilerResult[] ?? errorResults.ToArray();
-            foreach (var result in compilerComplaints)
+            IEnumerable<CompilerResult> results = new CompilerResult[]{};
+            try
             {
+                results = processor.Process(configPath, configs, true, CompilationAttempts > 0);
+            }
+            catch (Exception)
+            {
+                problemEncountered = true;
+                if (CompilationAttempts > 0)
+                    throw;
+            }
+
+            var errorResults = results.Where(r => r.HasErrors).ToArray();
+
+            foreach (var result in errorResults)
+            {
+                problemEncountered = true;
                 foreach (var error in result.Errors)
                     Log(error.Message, true);
             }
 
-            return compilerComplaints.Any() ? 1 : 0;
+            //If issues were encountered with compilation, re-initialize the Node dependencies and try one more time
+            if (problemEncountered && CompilationAttempts == 0)
+            {
+                CompilationAttempts++;
+                return Main(args);
+            }
+
+            return errorResults.Any() ? 1 : 0;
         }
 
         private static void EventHookups(ConfigFileProcessor processor)

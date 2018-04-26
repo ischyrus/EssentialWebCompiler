@@ -71,19 +71,5 @@ namespace WebCompilerTest
             var result = ConfigHandler.GetConfigs("../../artifacts/lessconfig.json");
             Assert.IsTrue(result.First().Options.Count == 2);
         }
-
-        [TestMethod, TestCategory("LESS")]
-        public void AssociateExtensionSourceFileChangedTest()
-        {
-            var result = _processor.SourceFileChanged("../../artifacts/lessconfig.json", "less/test.less", null);
-            Assert.AreEqual(2, result.Count<CompilerResult>());
-        }
-
-        [TestMethod, TestCategory("LESS")]
-        public void OtherExtensionTypeSourceFileChangedTest()
-        {
-            var result = _processor.SourceFileChanged("../../artifacts/lessconfig.json", "scss/test.scss", null);
-            Assert.AreEqual(0, result.Count<CompilerResult>());
-        }
     }
 }

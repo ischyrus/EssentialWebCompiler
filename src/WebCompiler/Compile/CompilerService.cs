@@ -11,7 +11,7 @@ namespace WebCompiler
     public static class CompilerService
     {
         internal const string Version = "1.4.167";
-        private static readonly string _path = Path.Combine(Path.GetTempPath(), "WebCompiler" + Version);
+        public static readonly string TempFolderPath = Path.Combine(Path.GetTempPath(), "WebCompiler" + Version);
         private static object _syncRoot = new object(); // Used to lock on the initialize step
 
         /// <summary>A list of allowed file extensions.</summary>
@@ -29,43 +29,43 @@ namespace WebCompiler
             return AllowedExtensions.Contains(ext);
         }
 
-        internal static ICompiler GetCompiler(Config config)
+        internal static ICompiler GetCompiler(Config config, bool forceReinitialization = false)
         {
             string ext = Path.GetExtension(config.InputFile).ToUpperInvariant();
             ICompiler compiler = null;
 
-            Initialize();
+            Initialize(forceReinitialization);
 
             switch (ext)
             {
                 case ".LESS":
-                    compiler = new LessCompiler(_path);
+                    compiler = new LessCompiler(TempFolderPath);
                     break;
 
                 case ".HANDLEBARS":
                 case ".HBS":
-                    compiler = new HandlebarsCompiler(_path);
+                    compiler = new HandlebarsCompiler(TempFolderPath);
                     break;
 
                 case ".SCSS":
                 case ".SASS":
-                    compiler = new SassCompiler(_path);
+                    compiler = new SassCompiler(TempFolderPath);
                     break;
 
                 case ".STYL":
                 case ".STYLUS":
-                    compiler = new StylusCompiler(_path);
+                    compiler = new StylusCompiler(TempFolderPath);
                     break;
 
                 case ".COFFEE":
                 case ".ICED":
-                    compiler = new IcedCoffeeScriptCompiler(_path);
+                    compiler = new IcedCoffeeScriptCompiler(TempFolderPath);
                     break;
 
                 case ".JS":
                 case ".JSX":
                 case ".ES6":
-                    compiler = new BabelCompiler(_path);
+                    compiler = new BabelCompiler(TempFolderPath);
                     break;
             }
 
@@ -75,31 +75,31 @@ namespace WebCompiler
         /// <summary>
         /// Initializes the Node environment.
         /// </summary>
-        public static void Initialize()
+        public static void Initialize(bool forceReinitialization = false)
         {
-            var node_modules = Path.Combine(_path, "node_modules");
-            var node_exe = Path.Combine(_path, "node.exe");
-            var log_file = Path.Combine(_path, "log.txt");
+            var node_modules = Path.Combine(TempFolderPath, "node_modules");
+            var node_exe = Path.Combine(TempFolderPath, "node.exe");
+            var log_file = Path.Combine(TempFolderPath, "log.txt");
 
             lock (_syncRoot)
             {
-                if (!Directory.Exists(node_modules) || !File.Exists(node_exe) || !File.Exists(log_file))
+                if (forceReinitialization || !Directory.Exists(node_modules) || !File.Exists(node_exe) || !File.Exists(log_file))
                 {
                     OnInitializing();
 
-                    if (Directory.Exists(_path))
-                        Directory.Delete(_path, true);
+                    if (Directory.Exists(TempFolderPath))
+                        Directory.Delete(TempFolderPath, true);
 
-                    Directory.CreateDirectory(_path);
-                    SaveResourceFile(_path, "WebCompiler.Node.node.7z", "node.7z");
-                    SaveResourceFile(_path, "WebCompiler.Node.node_modules.7z", "node_modules.7z");
-                    SaveResourceFile(_path, "WebCompiler.Node.7z.exe", "7z.exe");
-                    SaveResourceFile(_path, "WebCompiler.Node.7z.dll", "7z.dll");
-                    SaveResourceFile(_path, "WebCompiler.Node.prepare.cmd", "prepare.cmd");
+                    Directory.CreateDirectory(TempFolderPath);
+                    SaveResourceFile(TempFolderPath, "WebCompiler.Node.node.7z", "node.7z");
+                    SaveResourceFile(TempFolderPath, "WebCompiler.Node.node_modules.7z", "node_modules.7z");
+                    SaveResourceFile(TempFolderPath, "WebCompiler.Node.7z.exe", "7z.exe");
+                    SaveResourceFile(TempFolderPath, "WebCompiler.Node.7z.dll", "7z.dll");
+                    SaveResourceFile(TempFolderPath, "WebCompiler.Node.prepare.cmd", "prepare.cmd");
 
                     ProcessStartInfo start = new ProcessStartInfo
                     {
-                        WorkingDirectory = _path,
+                        WorkingDirectory = TempFolderPath,
                         CreateNoWindow = true,
                         WindowStyle = ProcessWindowStyle.Hidden,
                         FileName = "cmd.exe",
