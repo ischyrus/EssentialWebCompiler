@@ -25,7 +25,7 @@ namespace WebCompiler
             return _result;
         }
 
-        private static int CompilationAttempts = 0;
+        private static int FailedCompilationAttempts = 0;
 
         /// <summary>
         /// Entry-point for compilation
@@ -53,12 +53,12 @@ namespace WebCompiler
             IEnumerable<CompilerResult> results = new CompilerResult[]{};
             try
             {
-                results = processor.Process(configPath, configs, true, CompilationAttempts > 0);
+                results = processor.Process(configPath, configs, true, FailedCompilationAttempts > 0);
             }
             catch (Exception e)
             {
                 problemEncountered = true;
-                if (CompilationAttempts > 0)
+                if (FailedCompilationAttempts > 0)
                     throw;
             }
 
@@ -72,11 +72,12 @@ namespace WebCompiler
             }
 
             //If issues were encountered with compilation, re-initialize the Node dependencies and try one more time
-            if (problemEncountered && CompilationAttempts == 0)
+            if (problemEncountered)
             {
-                CompilationAttempts++;
+                FailedCompilationAttempts++;
                 return Main(args);
             }
+            FailedCompilationAttempts = 0;
 
             return errorResults.Any() ? 1 : 0;
         }
