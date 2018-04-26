@@ -1,12 +1,9 @@
 ## EssentialWebCompiler
 
 EssentialWebCompiler is a run-time stylesheet compiler for .NET, and a fork of madskristensen's [WebCompiler](https://github.com/madskristensen/WebCompiler).
-While WebCompiler offers an out-of-the-box Visual Studio extension for easily updating your stylesheets at development time, 
-EssentialWebCompiler allows you to invoke the powerful compiler at run-time, making modifying your application's theme simple and painless. 
-
-Since the heart of EssentialWebCompiler is WebCompiler, your existing compilerconfig.json file is interoperable for
-both purposes.  Because EssentialWebCompiler is meant to provide speedy run-time compilation, much of the underlying compiler library is preloaded,
-which means it uses a little more space in your codebase, but will have a faster average compilation time.
+The WebCompiler extension for Visual Studio allows you to easily update your stylesheets at development time, both manually and via source file tracking.
+EssentialWebCompiler instead allows you to invoke the powerful compiler at run-time, making on-the-fly stylesheet compilation simple. I personally
+created this solution for allowing my applications' users to amend the site theme at run-time.
 
 ### Features
 
@@ -16,10 +13,17 @@ which means it uses a little more space in your codebase, but will have a faster
 - Event and error logging included
 - Simple installation into your application via [NuGet](https://www.nuget.org/packages/Equus.Tools.EssentialWebCompiler/)
 
+### WebCompiler Users
+Since the heart of EssentialWebCompiler is WebCompiler, your existing compilerconfig.json file is interoperable for
+both purposes. 
+
 ### Getting started
 
+Expect EssentialWebCompiler to use about 100 MB in a temporary folder where it will store necessary Node.js dependencies.
+Dependencies for all supported CSS preprocessor compilation are included, so if you're looking to save space consider taking those out.
+
 Install EssentialWebCompiler into your project that requires run-time compilation using [NuGet](https://www.nuget.org/packages/Equus.Tools.EssentialWebCompiler/).
-After that, it's simple as pointing the compiler in the direction of you WebCompiler configuration file and saying "Compile".
+To compile your stylesheet, invoke the compiler, providing the path to your compilerconfig.json file which specifies source and output files as well as any other options.
 
 ```C#
 var results = Essential.Compile("C:/FooSolution/BarProject/compilerconfig.json");
