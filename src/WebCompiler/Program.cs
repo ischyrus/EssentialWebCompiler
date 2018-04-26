@@ -55,7 +55,7 @@ namespace WebCompiler
             {
                 results = processor.Process(configPath, configs, true, CompilationAttempts > 0);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 problemEncountered = true;
                 if (CompilationAttempts > 0)

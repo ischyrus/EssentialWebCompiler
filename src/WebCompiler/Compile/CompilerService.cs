@@ -88,7 +88,21 @@ namespace WebCompiler
                     OnInitializing();
 
                     if (Directory.Exists(TempFolderPath))
-                        Directory.Delete(TempFolderPath, true);
+                    {
+                        try
+                        {
+                            Directory.Delete(TempFolderPath, true);
+                        }
+                        catch (DirectoryNotFoundException dnfe)
+                        {
+                            ProcessStartInfo Info = new ProcessStartInfo();
+                            Info.Arguments = $"/C rd /s /q \"{TempFolderPath}\"";  
+                            Info.WindowStyle = ProcessWindowStyle.Hidden;
+                            Info.CreateNoWindow = true;
+                            Info.FileName = "cmd.exe";
+                            Process.Start(Info);
+                        }
+                    }
 
                     Directory.CreateDirectory(TempFolderPath);
                     SaveResourceFile(TempFolderPath, "WebCompiler.Node.node.7z", "node.7z");
