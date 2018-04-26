@@ -89,19 +89,13 @@ namespace WebCompiler
 
                     if (Directory.Exists(TempFolderPath))
                     {
-                        try
-                        {
-                            Directory.Delete(TempFolderPath, true);
-                        }
-                        catch (DirectoryNotFoundException dnfe)
-                        {
-                            ProcessStartInfo Info = new ProcessStartInfo();
-                            Info.Arguments = $"/C rd /s /q \"{TempFolderPath}\"";  
-                            Info.WindowStyle = ProcessWindowStyle.Hidden;
-                            Info.CreateNoWindow = true;
-                            Info.FileName = "cmd.exe";
-                            Process.Start(Info);
-                        }
+                        ProcessStartInfo info = new ProcessStartInfo();
+                        info.Arguments = $"/C rd /s /q \"{TempFolderPath}\"";  
+                        info.WindowStyle = ProcessWindowStyle.Hidden;
+                        info.CreateNoWindow = true;
+                        info.FileName = "cmd.exe";
+                        var d = Process.Start(info);
+                        d.WaitForExit();
                     }
 
                     Directory.CreateDirectory(TempFolderPath);
