@@ -5,7 +5,7 @@
     <version>$version$</version>
     <title>$title$</title>
     <authors>dkoch74</authors>
-    <owners>$author$</owners>
+    <owners>$author$, Equus Software LLC</owners>
     <licenseUrl>https://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Stripped-down version of madskristensen's WebCompiler, catered toward runtime stylesheet compilation.</description>
