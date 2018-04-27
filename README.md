@@ -19,7 +19,7 @@ both purposes.
 
 ### Getting started
 
-Expect EssentialWebCompiler to use about 100 MB in a temporary folder where it will store necessary Node.js dependencies.
+Expect EssentialWebCompiler to use ~100 MB in a temporary folder where it will store necessary Node.js dependencies.
 Dependencies for all supported CSS preprocessor compilation are included, so if you're looking to save space consider taking those out.
 
 Install EssentialWebCompiler into your project that requires run-time compilation using [NuGet](https://www.nuget.org/packages/Equus.Tools.EssentialWebCompiler/).
