@@ -5,7 +5,7 @@
     <TargetFrameworks>net46;netstandard2.0;netcoreapp2.0</TargetFrameworks>
     
     <Title>Web Compiler</Title>
-    <PackageId>BuildWebCompiler</PackageId>
+    <PackageId>Drg.WebCompiler</PackageId>
 
     <BuildOutputTargetFolder>tools</BuildOutputTargetFolder>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -15,6 +15,11 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TargetFrameworkProfile />
+    <Authors>Mads Kristensen, Data Research Group</Authors>
+    <Copyright>Copyright 2024</Copyright>
+    <RepositoryUrl>https://github.com/jehhynes/EssentialWebCompiler</RepositoryUrl>
+    <Version>1.0.0</Version>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="Node\prepare.cmd" />
@@ -35,11 +40,11 @@
   <Target Name="PrepareNpmDependencies" AfterTargets="Restore">
     <Exec Command="..\..\build\build.cmd" />
   </Target>
-    <Target Name="PackTaskDependencies" BeforeTargets="GenerateNuspec">
-        <!--
+    <!--<Target Name="PackTaskDependencies" BeforeTargets="GenerateNuspec">
+        --><!--
     The include needs to happen after output has been copied to build output folder
     but before NuGet generates a nuspec. See https://github.com/NuGet/Home/issues/4704.
-    -->
+    --><!--
         <ItemGroup>
             <_PackageFiles Include="bin\$(Configuration)\*\Newtonsoft.Json.dll;bin\$(Configuration)\*\NUglify.dll">
                 <PackagePath>tools\%(RecursiveDir)</PackagePath>
@@ -47,7 +52,7 @@
                 <BuildAction>Content</BuildAction>
             </_PackageFiles>
         </ItemGroup>
-    </Target>
+    </Target>-->
   <!--<Import Project="..\..\packages\Fody.2.0.6\build\dotnet\Fody.targets" Condition="Exists('..\..\packages\Fody.2.0.6\build\dotnet\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

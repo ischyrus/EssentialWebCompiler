@@ -11,7 +11,7 @@ created this solution for allowing my applications' users to amend the site them
 - Based upon popular and reliable [WebCompiler](https://github.com/madskristensen/WebCompiler) project by madskristensen
 - Compiles LESS, Scss, Stylus, JSX, ES6 and (Iced)CoffeeScript
 - Event and error logging included
-- Simple installation into your application via [NuGet](https://www.nuget.org/packages/Equus.Tools.EssentialWebCompiler/)
+- Simple installation into your application via [NuGet](https://github.com/jehhynes/EssentialWebCompiler)
 
 ### WebCompiler Users
 Since the heart of EssentialWebCompiler is WebCompiler, your existing compilerconfig.json file is interoperable for
@@ -22,7 +22,7 @@ both purposes.
 Expect EssentialWebCompiler to use ~100 MB in a temporary folder where it will store necessary Node.js dependencies.
 Dependencies for all supported CSS preprocessor compilation are included, so if you're looking to save space consider taking those out.
 
-Install EssentialWebCompiler into your project that requires run-time compilation using [NuGet](https://www.nuget.org/packages/Equus.Tools.EssentialWebCompiler/).
+Install EssentialWebCompiler into your project that requires run-time compilation using [NuGet](https://github.com/jehhynes/EssentialWebCompiler).
 To compile your stylesheet, invoke the compiler, providing the path to your compilerconfig.json file which specifies source and output files as well as any other options.
 
 ```C#
