@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WebCompiler;
@@ -25,12 +26,15 @@ namespace WebCompilerTest
             File.Delete("../../artifacts/less/error.css");
             File.Delete("../../artifacts/less/relative.css");
             File.Delete("../../artifacts/less/relative.min.css");
+            File.Delete("../../artifacts/less/circrefa.css");
+            File.Delete("../../artifacts/less/circrefa.min.css");
         }
 
         [TestMethod, TestCategory("LESS")]
         public void CompileLess()
         {
             var result = _processor.Process("../../artifacts/lessconfig.json");
+            Assert.IsTrue(result.All(r => !r.HasErrors));
             Assert.IsTrue(File.Exists("../../artifacts/less/test.css"));
             Assert.IsTrue(File.Exists("../../artifacts/less/test.min.css"));
             Assert.IsTrue(result.ElementAt(1).CompiledContent.Contains("url(foo.png)"));
@@ -51,6 +55,7 @@ namespace WebCompilerTest
         public void CompileLessWithError()
         {
             var result = _processor.Process("../../artifacts/lessconfigerror.json");
+            Assert.IsTrue(result.Any(r => r.HasErrors));
             Assert.IsTrue(result.Count() == 1);
             Assert.IsTrue(result.ElementAt(0).HasErrors);
         }
@@ -59,6 +64,7 @@ namespace WebCompilerTest
         public void CompileLessWithParsingExceptionError()
         {
             var result = _processor.Process("../../artifacts/lessconfigParseerror.json");
+            Assert.IsTrue(result.Any(r => r.HasErrors));
             Assert.IsTrue(result.Count() == 1);
             Assert.IsTrue(result.ElementAt(0).HasErrors);
             Assert.AreNotEqual(0, result.ElementAt(0).Errors.ElementAt(0).LineNumber, "LineNumber is set when engine.TransformToCss generate a ParsingException");
@@ -70,6 +76,42 @@ namespace WebCompilerTest
         {
             var result = ConfigHandler.GetConfigs("../../artifacts/lessconfig.json");
             Assert.IsTrue(result.First().Options.Count == 2);
+        }
+
+        [TestMethod, TestCategory("LESS")]
+        public void AssociateExtensionSourceFileChangedTest()
+        {
+            var result = _processor.SourceFileChanged("../../artifacts/lessconfig.json", "less/test.less", null);
+            Assert.IsTrue(result.All(r => !r.HasErrors));
+            Assert.AreEqual(2, result.Count<CompilerResult>());
+    }
+
+        [TestMethod, TestCategory("LESS")]
+        public void OtherExtensionTypeSourceFileChangedTest()
+        {
+            var result = _processor.SourceFileChanged("../../artifacts/lessconfig.json", "scss/test.scss", null);
+            Assert.IsTrue(result.All(r => !r.HasErrors));
+            Assert.AreEqual(0, result.Count<CompilerResult>());
+}
+
+        [TestMethod, TestCategory("LESS")]
+        public void CompileCircularReference()
+        {
+            // Set the last write time and create outputs in a way that Config.CheckForNewerDependenciesRecursively will be called
+            File.SetLastWriteTimeUtc("../../artifacts/less/circrefa.less", DateTime.UtcNow);
+            File.SetLastWriteTimeUtc("../../artifacts/less/circrefb.less", DateTime.UtcNow);
+            File.WriteAllText("../../artifacts/less/circrefa.css", string.Empty);
+            File.WriteAllText("../../artifacts/less/circrefa.min.css", string.Empty);
+
+            // Since the outputs were generated after the inputs, no compilation should have occurred
+            var result = _processor.Process("../../artifacts/lessconfigCircRef.json");
+            Assert.AreEqual(0, result.Count<CompilerResult>());
+        }
+
+        public void CompileLessLegacyStrictMath()
+        {
+            var result = _processor.Process("../../artifacts/lessconfigLegacyStrictMath.json");
+            Assert.IsTrue(result.All(r => !r.HasErrors || r.Errors.All(e => e.IsWarning)));
         }
     }
 }

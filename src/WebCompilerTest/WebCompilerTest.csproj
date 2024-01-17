@@ -36,11 +36,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AjaxMin, Version=5.14.5506.26196, Culture=neutral, PublicKeyToken=21ef50ce11b5d80f, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\AjaxMin.5.14.5506.26202\lib\net40\AjaxMin.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="NUglify, Version=1.5.12.0, Culture=neutral, PublicKeyToken=15bc7810aec21b5e, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NUglify.1.5.12\lib\net40\NUglify.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -66,6 +67,7 @@
     <Compile Include="Compile\ScssOptionsTest.cs" />
     <Compile Include="Compile\ScssTest.cs" />
     <Compile Include="Compile\LessTest.cs" />
+    <Compile Include="Config\ConfigTest.cs" />
     <Compile Include="Minify\JavaScriptOptionsTests.cs" />
     <Compile Include="Minify\CssOptionsTests.cs" />
     <Compile Include="Minify\CssMinifierTests.cs" />
@@ -74,6 +76,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="artifacts\less\sub\logo.png" />
+    <None Include="artifacts\config\compilationrequired.scss" />
+    <None Include="artifacts\config\dependencies\sub\bar.scss" />
+    <None Include="artifacts\config\dependencies\foo.scss" />
     <None Include="artifacts\handlebarsconfigPartial.json" />
     <None Include="artifacts\handlebarsconfig.json" />
     <None Include="artifacts\coffeeconfig.json.defaults" />
@@ -81,6 +86,10 @@
     <None Include="artifacts\handlebars\test.hbs" />
     <None Include="artifacts\handlebars\error.hbs" />
     <None Include="artifacts\handlebars\_partial.hbs" />
+    <None Include="artifacts\lessconfigCircRef.json" />
+    <None Include="artifacts\less\circrefa.less" />
+    <None Include="artifacts\less\circrefb.less" />
+    <None Include="artifacts\lessconfigLegacyStrictMath.json" />
     <None Include="artifacts\scss\sub\foo.scss" />
     <None Include="artifacts\stylusconfig.json" />
     <None Include="artifacts\less\sub\relative.less" />

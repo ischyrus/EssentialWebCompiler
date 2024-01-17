@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace WebCompiler
@@ -36,6 +38,7 @@ namespace WebCompiler
         /// <summary>
         /// If true it makes Visual Studio include the output file in the project.
         /// </summary>
+        [DefaultValue(true)]
         [JsonProperty("includeInProject")]
         public bool IncludeInProject { get; set; } = true;
 
@@ -74,7 +77,7 @@ namespace WebCompiler
         /// <summary>
         /// Checks to see if the input file needs compilation
         /// </summary>
-        internal bool CompilationRequired()
+        public bool CompilationRequired()
         {
             FileInfo input = GetAbsoluteInputFile();
             FileInfo output = GetAbsoluteOutputFile();
@@ -82,7 +85,54 @@ namespace WebCompiler
             if (!output.Exists)
                 return true;
 
-            return input.LastWriteTimeUtc > output.LastWriteTimeUtc;
+            if (input.LastWriteTimeUtc > output.LastWriteTimeUtc)
+                return true;
+
+            return HasDependenciesNewerThanOutput(input, output);
+        }
+
+        private bool HasDependenciesNewerThanOutput(FileInfo input, FileInfo output)
+        {
+            var projectRoot = new FileInfo(FileName).DirectoryName;
+            var dependencies = DependencyService.GetDependencies(projectRoot, input.FullName);
+
+            if (dependencies != null)
+            {
+                string key = input.FullName.ToLowerInvariant();
+                return CheckForNewerDependenciesRecursively(key, dependencies, output);
+            }
+
+            return false;
+        }
+
+        private bool CheckForNewerDependenciesRecursively(string key, Dictionary<string, Dependencies> dependencies, FileInfo output, HashSet<string> checkedDependencies = null)
+        {
+            if (checkedDependencies == null)
+                checkedDependencies = new HashSet<string>();
+
+            checkedDependencies.Add(key);
+
+            if (!dependencies.ContainsKey(key))
+                return false;
+
+            foreach (var file in dependencies[key].DependentOn.ToArray())
+            {
+                if (checkedDependencies.Contains(file))
+                    continue;
+
+                var fileInfo = new FileInfo(file);
+
+                if (!fileInfo.Exists)
+                    continue;
+
+                if (fileInfo.LastWriteTimeUtc > output.LastWriteTimeUtc)
+                    return true;
+
+                if (CheckForNewerDependenciesRecursively(file, dependencies, output, checkedDependencies))
+                    return true;
+            }
+
+            return false;
         }
 
         /// <summary>
