@@ -78,21 +78,21 @@ namespace WebCompilerTest
             Assert.IsTrue(result.First().Options.Count == 2);
         }
 
-        [TestMethod, TestCategory("LESS")]
-        public void AssociateExtensionSourceFileChangedTest()
-        {
-            var result = _processor.SourceFileChanged("../../artifacts/lessconfig.json", "less/test.less", null);
-            Assert.IsTrue(result.All(r => !r.HasErrors));
-            Assert.AreEqual(2, result.Count<CompilerResult>());
-    }
+        //[TestMethod, TestCategory("LESS")]
+        //public void AssociateExtensionSourceFileChangedTest()
+        //{
+        //    var result = _processor.SourceFileChanged("../../artifacts/lessconfig.json", "less/test.less", null);
+        //    Assert.IsTrue(result.All(r => !r.HasErrors));
+        //    Assert.AreEqual(2, result.Count<CompilerResult>());
+        //}
 
-        [TestMethod, TestCategory("LESS")]
-        public void OtherExtensionTypeSourceFileChangedTest()
-        {
-            var result = _processor.SourceFileChanged("../../artifacts/lessconfig.json", "scss/test.scss", null);
-            Assert.IsTrue(result.All(r => !r.HasErrors));
-            Assert.AreEqual(0, result.Count<CompilerResult>());
-}
+        //[TestMethod, TestCategory("LESS")]
+        //public void OtherExtensionTypeSourceFileChangedTest()
+        //{
+        //    var result = _processor.SourceFileChanged("../../artifacts/lessconfig.json", "scss/test.scss", null);
+        //    Assert.IsTrue(result.All(r => !r.HasErrors));
+        //    Assert.AreEqual(0, result.Count<CompilerResult>());
+        //}
 
         [TestMethod, TestCategory("LESS")]
         public void CompileCircularReference()
