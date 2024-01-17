@@ -10,8 +10,8 @@ namespace WebCompiler
     /// </summary>
     public static class CompilerService
     {
-        internal const string Version = "1.4.167";
-        public static readonly string TempFolderPath = Path.Combine(Path.GetTempPath(), "WebCompiler" + Version);
+        public const string Version = "1.4.167";
+        public static string TempFolderPath = Path.Combine(Path.GetTempPath(), "WebCompiler" + Version);
         private static object _syncRoot = new object(); // Used to lock on the initialize step
 
         /// <summary>A list of allowed file extensions.</summary>

@@ -112,7 +112,10 @@ namespace WebCompiler
             }
         }
 
-        private CompilerResult ProcessConfig(string baseFolder, Config config, bool forceReinitialization = false)
+        /// <summary>
+        /// Process a single config
+        /// </summary>
+        public CompilerResult ProcessConfig(string baseFolder, Config config, bool forceReinitialization = false)
         {
             ICompiler compiler = CompilerService.GetCompiler(config, forceReinitialization);
 
