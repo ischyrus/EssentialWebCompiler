@@ -7,7 +7,7 @@
     <Title>Web Compiler</Title>
     <PackageId>Drg.WebCompiler</PackageId>
 
-    <BuildOutputTargetFolder>tools</BuildOutputTargetFolder>
+    <BuildOutputTargetFolder>lib</BuildOutputTargetFolder>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <NoPackageAnalysis>true</NoPackageAnalysis>
     <!-- forces SDK to copy dependencies into build output to make packing easier -->
@@ -18,7 +18,7 @@
     <Authors>Mads Kristensen, Data Research Group</Authors>
     <Copyright>Copyright 2024</Copyright>
     <RepositoryUrl>https://github.com/jehhynes/EssentialWebCompiler</RepositoryUrl>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
   <ItemGroup>
